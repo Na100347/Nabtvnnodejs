@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Plate Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        select, input {
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Creating a server with Node.js</h1>
+    <p>Hello, I'm a Node.js server for searching vehicle plate number!</p>
+    <select id="provinceSelect"></select>
+    <p id="plateResult">Biển số xe:</p>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lấy dữ liệu tỉnh thành từ server
+            fetch('/api/vehicle-plates')
+                .then(response => response.json())
+                .then(data => {
+                    const provinceSelect = document.getElementById('provinceSelect');
+                    // Thêm các tỉnh thành vào dropdown
+                    for (const province in data) {
+                        const option = document.createElement('option');
+                        option.value = province;
+                        option.textContent = province;
+                        provinceSelect.appendChild(option);
+                    }
+
+                    // Khi người dùng chọn một tỉnh, hiển thị biển số tương ứng
+                    provinceSelect.addEventListener('change', () => {
+                        const selectedProvince = provinceSelect.value;
+                        const plateResult = document.getElementById('plateResult');
+                        plateResult.textContent = `Biển số xe: ${data[selectedProvince]}`;
+                    });
+                })
+                .catch(err => {
+                    console.error('Error fetching vehicle plates:', err);
+                });
+        });
+    </script>
+</body>
+</html>
